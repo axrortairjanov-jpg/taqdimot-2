@@ -1,0 +1,213 @@
+<div style="background:#10201F;border-radius:var(--border-radius-lg);overflow:hidden;position:relative;aspect-ratio:16/10;font-family:var(--font-sans)">
+
+  <div id="frame-loader" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:#10201F;opacity:1;transition:opacity .6s ease">
+    <div style="font-family:Georgia,serif;font-style:italic;color:#F6F1E7;font-size:28px;letter-spacing:.02em" id="loader-text"></div>
+    <div style="width:0%;height:1px;background:#E07A3F;margin-top:14px" id="loader-line"></div>
+  </div>
+
+  <div id="frame-home" style="position:absolute;inset:0;opacity:0;background:linear-gradient(180deg,#F6F1E7,#EDE4D3);padding:7% 8%;box-sizing:border-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6%">
+      <span style="font-family:Georgia,serif;font-style:italic;font-size:20px;color:#10201F">Wayfare</span>
+      <div style="display:flex;gap:18px;font-size:12px;color:#10201F99">
+        <span>Home</span><span>Tours</span><span>Destinations</span><span>About</span>
+      </div>
+      <span style="background:#E07A3F;color:#fff;font-size:11px;padding:6px 14px;border-radius:20px">Book now</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:5%;align-items:center">
+      <div id="home-text" style="opacity:0;transform:translateY(16px);transition:all .7s cubic-bezier(.22,1,.36,1)">
+        <div style="color:#E07A3F;font-size:11px;font-weight:500;letter-spacing:.04em;margin-bottom:10px">EXPLORE THE WORLD</div>
+        <div style="font-family:Georgia,serif;font-size:30px;line-height:1.15;color:#10201F">Every trip starts<br>as a single<br><span style="font-style:italic;color:#E07A3F">line on the map.</span></div>
+        <div style="margin-top:16px;display:flex;gap:10px">
+          <span style="background:#E07A3F;color:#fff;font-size:11px;padding:8px 16px;border-radius:20px">Explore destinations</span>
+          <span style="border:1px solid #10201F;color:#10201F;font-size:11px;padding:8px 16px;border-radius:20px">Watch the film</span>
+        </div>
+      </div>
+      <div id="home-img" style="opacity:0;transform:scale(.94);transition:all .9s cubic-bezier(.22,1,.36,1);border-radius:16px;overflow:hidden;height:160px;background:linear-gradient(135deg,#2F5B57,#E07A3F)"></div>
+    </div>
+  </div>
+
+  <div id="frame-tours" style="position:absolute;inset:0;opacity:0;background:#F6F1E7;padding:7% 8%;box-sizing:border-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5%">
+      <span style="font-family:Georgia,serif;font-style:italic;font-size:20px;color:#10201F">Wayfare</span>
+      <div style="display:flex;gap:18px;font-size:12px;color:#10201F99"><span>Home</span><span style="color:#10201F;border-bottom:1px solid #E07A3F">Tours</span><span>Destinations</span><span>About</span></div>
+    </div>
+    <div style="font-family:Georgia,serif;font-size:22px;color:#10201F;margin-bottom:3%">Tours built around a feeling.</div>
+    <div id="tours-filters" style="display:flex;gap:8px;margin-bottom:4%">
+      <span class="pill active" data-pill style="font-size:11px;padding:6px 14px;border-radius:20px;border:1px solid #10201F30;transition:all .3s ease">All tours</span>
+      <span class="pill" data-pill style="font-size:11px;padding:6px 14px;border-radius:20px;border:1px solid #10201F30;transition:all .3s ease">Beach</span>
+      <span class="pill" data-pill style="font-size:11px;padding:6px 14px;border-radius:20px;border:1px solid #10201F30;transition:all .3s ease">Adventure</span>
+    </div>
+    <div id="tours-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+      <div class="tcard" style="opacity:0;transform:translateY(14px);transition:all .5s cubic-bezier(.22,1,.36,1)"><div style="height:70px;border-radius:10px;background:linear-gradient(135deg,#5DCAA5,#0F6E56)"></div><div style="font-size:11px;margin-top:6px;color:#10201F">Bali slow escape</div></div>
+      <div class="tcard" style="opacity:0;transform:translateY(14px);transition:all .5s cubic-bezier(.22,1,.36,1)"><div style="height:70px;border-radius:10px;background:linear-gradient(135deg,#F0997B,#D85A30)"></div><div style="font-size:11px;margin-top:6px;color:#10201F">Patagonia trail</div></div>
+      <div class="tcard" style="opacity:0;transform:translateY(14px);transition:all .5s cubic-bezier(.22,1,.36,1)"><div style="height:70px;border-radius:10px;background:linear-gradient(135deg,#85B7EB,#185FA5)"></div><div style="font-size:11px;margin-top:6px;color:#10201F">Tokyo after dark</div></div>
+    </div>
+  </div>
+
+  <div id="frame-dest" style="position:absolute;inset:0;opacity:0;background:#1E3F3C;padding:7% 8%;box-sizing:border-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5%">
+      <span style="font-family:Georgia,serif;font-style:italic;font-size:20px;color:#F6F1E7">Wayfare</span>
+      <div style="display:flex;gap:18px;font-size:12px;color:#F6F1E799"><span>Home</span><span>Tours</span><span style="color:#F6F1E7;border-bottom:1px solid #E07A3F">Destinations</span><span>About</span></div>
+    </div>
+    <svg viewBox="0 0 600 220" style="width:100%;height:180px">
+      <ellipse cx="120" cy="80" rx="70" ry="40" fill="#F6F1E712"/>
+      <ellipse cx="280" cy="60" rx="90" ry="35" fill="#F6F1E712"/>
+      <ellipse cx="450" cy="90" rx="80" ry="45" fill="#F6F1E712"/>
+      <ellipse cx="150" cy="160" rx="60" ry="50" fill="#F6F1E712"/>
+      <path d="M150 90 Q 230 40, 290 60 Q 380 80, 450 70" fill="none" stroke="#E07A3F" stroke-width="1.2" stroke-dasharray="3 6" opacity="0.5"/>
+      <g id="pin1"><circle cx="150" cy="90" r="5" fill="#F6F1E7"/><circle cx="150" cy="90" r="5" fill="none" stroke="#E07A3F" stroke-width="1.5"><animate attributeName="r" values="5;11;5" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0;.8" dur="2s" repeatCount="indefinite"/></circle><text x="150" y="75" fill="#F6F1E7" font-size="10" text-anchor="middle">Bali</text></g>
+      <g id="pin2"><circle cx="290" cy="60" r="5" fill="#F6F1E7"/><circle cx="290" cy="60" r="5" fill="none" stroke="#E07A3F" stroke-width="1.5"><animate attributeName="r" values="5;11;5" dur="2s" repeatCount="indefinite" begin=".4s"/><animate attributeName="opacity" values=".8;0;.8" dur="2s" repeatCount="indefinite" begin=".4s"/></circle><text x="290" y="45" fill="#F6F1E7" font-size="10" text-anchor="middle">Paris</text></g>
+      <g id="pin3"><circle cx="450" cy="70" r="5" fill="#F6F1E7"/><circle cx="450" cy="70" r="5" fill="none" stroke="#E07A3F" stroke-width="1.5"><animate attributeName="r" values="5;11;5" dur="2s" repeatCount="indefinite" begin=".8s"/><animate attributeName="opacity" values=".8;0;.8" dur="2s" repeatCount="indefinite" begin=".8s"/></circle><text x="450" y="55" fill="#F6F1E7" font-size="10" text-anchor="middle">Tokyo</text></g>
+    </svg>
+    <div id="dest-modal" style="opacity:0;transform:translateY(10px) scale(.96);transition:all .5s cubic-bezier(.22,1,.36,1);background:#F6F1E7;border-radius:12px;padding:10px 16px;position:absolute;bottom:8%;left:8%;right:8%;display:flex;justify-content:space-between;align-items:center">
+      <div><div style="font-size:10px;color:#10201F99">Indonesia</div><div style="font-family:Georgia,serif;font-size:15px;color:#10201F">Bali · 7 days</div></div>
+      <span style="background:#E07A3F;color:#fff;font-size:10px;padding:6px 14px;border-radius:20px">Book this trip</span>
+    </div>
+  </div>
+
+  <div id="frame-about" style="position:absolute;inset:0;opacity:0;background:#F6F1E7;padding:7% 8%;box-sizing:border-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6%">
+      <span style="font-family:Georgia,serif;font-style:italic;font-size:20px;color:#10201F">Wayfare</span>
+      <div style="display:flex;gap:18px;font-size:12px;color:#10201F99"><span>Home</span><span>Tours</span><span>Destinations</span><span style="color:#10201F;border-bottom:1px solid #E07A3F">About</span></div>
+    </div>
+    <div style="font-family:Georgia,serif;font-size:24px;line-height:1.2;color:#10201F;max-width:60%;margin-bottom:6%">We got tired of itineraries <span style="font-style:italic;color:#E07A3F">that read like spreadsheets.</span></div>
+    <div id="about-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;background:#10201F;border-radius:14px;padding:16px">
+      <div style="text-align:center"><div style="font-family:Georgia,serif;font-size:20px;color:#F6F1E7" id="stat1">0</div><div style="font-size:10px;color:#F6F1E799">Travelers</div></div>
+      <div style="text-align:center"><div style="font-family:Georgia,serif;font-size:20px;color:#F6F1E7" id="stat2">0</div><div style="font-size:10px;color:#F6F1E799">Destinations</div></div>
+      <div style="text-align:center"><div style="font-family:Georgia,serif;font-size:20px;color:#F6F1E7" id="stat3">0</div><div style="font-size:10px;color:#F6F1E799">Years</div></div>
+    </div>
+  </div>
+
+  <div id="frame-end" style="position:absolute;inset:0;opacity:0;background:#10201F;display:flex;align-items:center;justify-content:center;flex-direction:column">
+    <div style="font-family:Georgia,serif;font-style:italic;font-size:30px;color:#F6F1E7" id="end-text"></div>
+    <div style="font-size:12px;color:#E07A3F;margin-top:10px;opacity:0;transition:opacity .8s ease" id="end-sub">Keyingi sayohatingiz bir qadam naridan boshlanadi</div>
+  </div>
+
+  <div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10" id="dots"></div>
+  <button id="replay-btn" aria-label="Qaytadan ko'rish" style="position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;background:#F6F1E720;border:none;color:#F6F1E7;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:10"><i class="ti ti-refresh" style="font-size:15px" aria-hidden="true"></i></button>
+</div>
+
+<script>
+(function(){
+  const loaderText = document.getElementById('loader-text');
+  const phrase = 'Wayfare';
+  let i=0;
+  const typeTimer = setInterval(()=>{ loaderText.textContent = phrase.slice(0,i+1); i++; if(i>=phrase.length) clearInterval(typeTimer); }, 90);
+  setTimeout(()=>{ document.getElementById('loader-line').style.transition='width 1s cubic-bezier(.22,1,.36,1)'; document.getElementById('loader-line').style.width='100%'; }, 100);
+
+  const frames = ['frame-home','frame-tours','frame-dest','frame-about','frame-end'];
+  const captions = ['Bosh sahifa', 'Sayohat turlari', 'Yo\\'nalishlar', 'Biz haqimizda', 'Wayfare'];
+  const dotsWrap = document.getElementById('dots');
+  frames.forEach((_,idx)=>{
+    const d = document.createElement('div');
+    d.style.cssText = 'width:18px;height:2px;border-radius:2px;background:#F6F1E730;transition:background .3s ease';
+    d.dataset.idx = idx;
+    dotsWrap.appendChild(d);
+  });
+  const dotEls = dotsWrap.children;
+
+  function setActiveDot(n){
+    for(let k=0;k<dotEls.length;k++){ dotEls[k].style.background = k===n ? '#E07A3F' : '#F6F1E730'; }
+  }
+
+  function fadeOutIn(fromId, toId, after){
+    const fromEl = fromId ? document.getElementById(fromId) : null;
+    const toEl = document.getElementById(toId);
+    if(fromEl){ fromEl.style.transition='opacity .5s ease'; fromEl.style.opacity='0'; }
+    setTimeout(()=>{
+      toEl.style.transition='opacity .5s ease';
+      toEl.style.opacity='1';
+      if(after) after();
+    }, fromEl ? 400 : 0);
+  }
+
+  function animateCount(el, target, dur){
+    const start = performance.now();
+    function step(now){
+      const p = Math.min((now-start)/dur, 1);
+      const eased = 1 - Math.pow(1-p, 3);
+      el.textContent = Math.round(eased*target).toLocaleString();
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function runSequence(){
+    document.getElementById('replay-btn').style.display='none';
+    // reset all frames
+    ['frame-home','frame-tours','frame-dest','frame-about','frame-end'].forEach(id=>{
+      document.getElementById(id).style.opacity='0';
+    });
+    document.getElementById('home-text').style.opacity='0';
+    document.getElementById('home-text').style.transform='translateY(16px)';
+    document.getElementById('home-img').style.opacity='0';
+    document.getElementById('home-img').style.transform='scale(.94)';
+    document.querySelectorAll('.tcard').forEach(c=>{ c.style.opacity='0'; c.style.transform='translateY(14px)'; });
+    document.getElementById('dest-modal').style.opacity='0';
+    document.getElementById('dest-modal').style.transform='translateY(10px) scale(.96)';
+    document.getElementById('stat1').textContent='0';
+    document.getElementById('stat2').textContent='0';
+    document.getElementById('stat3').textContent='0';
+    document.getElementById('end-text').textContent='';
+    document.getElementById('end-sub').style.opacity='0';
+
+    setTimeout(()=>{
+      document.getElementById('frame-loader').style.opacity='0';
+      fadeOutIn(null, 'frame-home');
+      setActiveDot(0);
+      setTimeout(()=>{
+        document.getElementById('home-text').style.opacity='1';
+        document.getElementById('home-text').style.transform='translateY(0)';
+      }, 200);
+      setTimeout(()=>{
+        document.getElementById('home-img').style.opacity='1';
+        document.getElementById('home-img').style.transform='scale(1)';
+      }, 450);
+    }, 1300);
+
+    setTimeout(()=>{
+      fadeOutIn('frame-home','frame-tours');
+      setActiveDot(1);
+      document.querySelectorAll('.tcard').forEach((c,idx)=>{
+        setTimeout(()=>{ c.style.opacity='1'; c.style.transform='translateY(0)'; }, 500 + idx*150);
+      });
+    }, 4200);
+
+    setTimeout(()=>{
+      fadeOutIn('frame-tours','frame-dest');
+      setActiveDot(2);
+      setTimeout(()=>{
+        document.getElementById('dest-modal').style.opacity='1';
+        document.getElementById('dest-modal').style.transform='translateY(0) scale(1)';
+      }, 900);
+    }, 7800);
+
+    setTimeout(()=>{
+      fadeOutIn('frame-dest','frame-about');
+      setActiveDot(3);
+      setTimeout(()=>{
+        animateCount(document.getElementById('stat1'), 15200, 1200);
+        animateCount(document.getElementById('stat2'), 120, 1200);
+        animateCount(document.getElementById('stat3'), 10, 1200);
+      }, 400);
+    }, 11500);
+
+    setTimeout(()=>{
+      fadeOutIn('frame-about','frame-end');
+      setActiveDot(4);
+      const endEl = document.getElementById('end-text');
+      const txt = 'Wayfare';
+      let j=0;
+      const t2 = setInterval(()=>{ endEl.textContent = txt.slice(0,j+1); j++; if(j>=txt.length) clearInterval(t2); }, 90);
+      setTimeout(()=>{ document.getElementById('end-sub').style.opacity='1'; }, 700);
+    }, 14800);
+
+    setTimeout(()=>{
+      document.getElementById('replay-btn').style.display='flex';
+    }, 17500);
+  }
+
+  document.getElementById('replay-btn').addEventListener('click', runSequence);
+  runSequence();
+})();
+</script>

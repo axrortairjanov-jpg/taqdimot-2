@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tours — Wayfare</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#10201F', sand: '#F6F1E7', sandDeep: '#EDE4D3',
+          ember: '#E07A3F', emberDeep: '#C4622E', pine: '#2F5B57', pineDeep: '#1E3F3C',
+        },
+        fontFamily: { display: ['Fraunces', 'serif'], body: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+<style>
+  :root{ --ease: cubic-bezier(.22,1,.36,1); }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background:#F6F1E7; color:#10201F; }
+  .font-display { font-family: 'Fraunces', serif; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  }
+  #loader { position: fixed; inset: 0; z-index: 9999; background: #10201F; display: flex; align-items: center; justify-content: center; transition: opacity .6s var(--ease), visibility .6s var(--ease); }
+  #loader.done { opacity: 0; visibility: hidden; pointer-events: none; }
+  .loader-mark { font-family: 'Fraunces', serif; font-style: italic; color: #F6F1E7; font-size: 2.4rem; letter-spacing: .02em; opacity: 0; animation: loaderIn 1.1s var(--ease) forwards; }
+  .loader-line { width: 0%; height: 1px; background: #E07A3F; margin-top: 14px; animation: loaderLine 1.3s var(--ease) forwards .2s; }
+  @keyframes loaderIn { to { opacity: 1; } }
+  @keyframes loaderLine { to { width: 100%; } }
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal-stagger.in > * { opacity: 1; transform: translateY(0); }
+  .reveal-stagger > * { opacity: 0; transform: translateY(24px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+  .reveal-stagger.in > *:nth-child(1){ transition-delay: .05s; }
+  .reveal-stagger.in > *:nth-child(2){ transition-delay: .15s; }
+  .reveal-stagger.in > *:nth-child(3){ transition-delay: .25s; }
+  .reveal-stagger.in > *:nth-child(4){ transition-delay: .35s; }
+  .nav-link { position: relative; }
+  .nav-link::after { content:''; position:absolute; left:0; bottom:-6px; height:1.5px; width:0%; background: currentColor; transition: width .35s var(--ease); }
+  .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+  .btn-ember { background: #E07A3F; color: #F6F1E7; transition: transform .35s var(--ease), box-shadow .35s var(--ease), background .35s var(--ease); box-shadow: 0 6px 20px -8px rgba(224,122,63,.5); }
+  .btn-ember:hover { background: #C4622E; transform: translateY(-2px); box-shadow: 0 12px 26px -10px rgba(224,122,63,.65); }
+  .btn-ghost { border: 1.5px solid #10201F; color:#10201F; transition: background .35s var(--ease), color .35s var(--ease), transform .35s var(--ease); }
+  .btn-ghost:hover { background:#10201F; color:#F6F1E7; transform: translateY(-2px); }
+  .tour-card { transition: transform .5s var(--ease), box-shadow .5s var(--ease); }
+  .tour-card:hover { transform: translateY(-8px); box-shadow: 0 30px 50px -25px rgba(16,32,31,.35); }
+  .tour-img { transition: transform .8s var(--ease); }
+  .tour-card:hover .tour-img { transform: scale(1.08); }
+  .filter-pill { transition: all .3s var(--ease); }
+  .filter-pill.active { background:#10201F; color:#F6F1E7; }
+  .modal-backdrop { position: fixed; inset:0; background: rgba(16,32,31,.7); backdrop-filter: blur(4px); opacity:0; visibility:hidden; transition: opacity .4s var(--ease), visibility .4s var(--ease); z-index: 200; }
+  .modal-backdrop.open { opacity:1; visibility: visible; }
+  .modal-panel { transform: translateY(24px) scale(.97); opacity:0; transition: transform .45s var(--ease), opacity .45s var(--ease); }
+  .modal-backdrop.open .modal-panel { transform: translateY(0) scale(1); opacity:1; }
+  #mobileMenu { transition: max-height .45s var(--ease), opacity .35s var(--ease); }
+  ::selection { background:#E07A3F; color:#F6F1E7; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid #E07A3F; outline-offset: 3px; }
+</style>
+</head>
+<body class="bg-sand overflow-x-hidden">
+
+<div id="loader" aria-hidden="true">
+  <div class="text-center">
+    <div class="loader-mark">Wayfare</div>
+    <div class="loader-line mx-auto"></div>
+  </div>
+</div>
+
+<header class="fixed top-0 inset-x-0 z-50 transition-all duration-500 bg-sand/90 backdrop-blur-md shadow-sm" id="siteHeader">
+  <nav class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between py-5">
+    <a href="index.html" class="font-display italic text-2xl tracking-tight">Wayfare</a>
+    <ul class="hidden md:flex items-center gap-9 text-sm font-medium">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="tours.html" class="nav-link active">Tours</a></li>
+      <li><a href="destinations.html" class="nav-link">Destinations</a></li>
+      <li><a href="about.html" class="nav-link">About</a></li>
+    </ul>
+    <button class="hidden md:inline-flex btn-ember px-6 py-2.5 rounded-full text-sm font-semibold" data-modal-open="bookingModal">Book now</button>
+    <button id="menuToggle" class="md:hidden flex flex-col gap-[5px] w-7" aria-label="Open menu" aria-expanded="false">
+      <span class="block h-[2px] w-full bg-current transition-all duration-300" id="bar1"></span>
+      <span class="block h-[2px] w-full bg-current transition-all duration-300" id="bar2"></span>
+      <span class="block h-[2px] w-5/6 bg-current transition-all duration-300 ml-auto" id="bar3"></span>
+    </button>
+  </nav>
+  <div id="mobileMenu" class="md:hidden overflow-hidden max-h-0 opacity-0 bg-ink">
+    <ul class="flex flex-col px-6 pb-6 gap-4 text-sand text-lg font-display">
+      <li><a href="index.html" class="block py-1">Home</a></li>
+      <li><a href="tours.html" class="block py-1">Tours</a></li>
+      <li><a href="destinations.html" class="block py-1">Destinations</a></li>
+      <li><a href="about.html" class="block py-1">About</a></li>
+      <li><button class="btn-ember px-6 py-2.5 rounded-full text-sm font-semibold w-fit mt-2" data-modal-open="bookingModal">Book now</button></li>
+    </ul>
+  </div>
+</header>
+
+<!-- PAGE HERO -->
+<section class="relative pt-40 pb-16 lg:pt-48 overflow-hidden">
+  <div class="absolute -top-20 -right-20 w-80 h-80 bg-ember/15 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 relative">
+    <span class="text-ember font-semibold text-sm uppercase tracking-wide reveal">Curated, not generic</span>
+    <h1 class="font-display text-5xl lg:text-6xl font-semibold mt-3 reveal">Tours built around a feeling, <span class="italic text-ember">not a checklist.</span></h1>
+    <p class="text-ink/60 mt-5 max-w-xl reveal">Pick a pace, pick a mood — every tour below is a starting point we tailor once you tell us more.</p>
+  </div>
+</section>
+
+<!-- FILTERS -->
+<section class="max-w-7xl mx-auto px-6 lg:px-10 reveal">
+  <div class="flex flex-wrap gap-3" id="filters">
+    <button class="filter-pill active px-5 py-2 rounded-full text-sm font-medium border border-ink/15" data-filter="all">All tours</button>
+    <button class="filter-pill px-5 py-2 rounded-full text-sm font-medium border border-ink/15" data-filter="beach">Beach</button>
+    <button class="filter-pill px-5 py-2 rounded-full text-sm font-medium border border-ink/15" data-filter="city">City</button>
+    <button class="filter-pill px-5 py-2 rounded-full text-sm font-medium border border-ink/15" data-filter="culture">Culture</button>
+    <button class="filter-pill px-5 py-2 rounded-full text-sm font-medium border border-ink/15" data-filter="adventure">Adventure</button>
+  </div>
+</section>
+
+<!-- TOUR GRID -->
+<section class="max-w-7xl mx-auto px-6 lg:px-10 py-14">
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-7 reveal-stagger" id="tourGrid">
+
+    <button class="tour-card text-left rounded-2xl overflow-hidden bg-white shadow-sm" data-cat="beach" data-tour="bali">
+      <div class="h-60 overflow-hidden"><img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80" class="tour-img w-full h-full object-cover" alt="Bali"></div>
+      <div class="p-5">
+        <span class="text-xs font-semibold text-ember uppercase tracking-wide">Beach</span>
+        <h3 class="font-display text-xl font-semibold mt-1">Bali Slow Escape</h3>
+        <p class="text-ink/50 text-sm mt-1">7 days · from $799</p>
+      </div>
+    </button>
+
+    <button class="tour-card text-left rounded-2xl overflow-hidden bg-white shadow-sm" data-cat="city" data-tour="paris">
+      <div class="h-60 overflow-hidden"><img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80" class="tour-img w-full h-full object-cover" alt="Paris"></div>
+      <div class="p-5">
+        <span class="text-xs font-semibold text-ember uppercase tracking-wide">City</span>
+        <h3 class="font-display text-xl font-semibold mt-1">Paris on Foot</h3>
+        <p class="text-ink/50 text-sm mt-1">5 days · from $999</p>
+      </div>
+    </button>
+
+    <button class="tour-card text-left rounded-2xl overflow-hidden bg-white shadow-sm" data-cat="culture" data-tour="london">
+      <div class="h-60 overflow-hidden"><img src="https://images.unsplash.com/photo-1486299267070-83823f5448dd?w=600&q=80" class="tour-img w-full h-full object-cover" alt="London"></div>
+      <div class="p-5">
+        <span class="text-xs font-semibold text-ember uppercase tracking-wide">Culture</span>
+        <h3 class="font-display text-xl font-semibold mt-1">London & Countryside</h3>
+        <p class="text-ink/50 text-sm mt-1">6 days · from $899</p>
+      </div>
+    </button>
+
+    <button class="tour-card text-left rounded-2xl overflow-hidden bg-white shadow-sm" data-cat="city" data-tour="tokyo">
+      <div class="h-60 overflow-hidden"><img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80" class="tour-img w-full h-full object-cover" alt="Tokyo"></div>
+      <div class="p-5">
+        <span class="text-xs font-semibold text-ember uppercase tracking-wide">City</span>
+        <h3 class="font-display text-xl font-semibold mt-1">Tokyo After Dark</h3>
+        <p class="text-ink/50 text-sm mt-1">8 days · from $1199</p>
+      </div>
+    </button>
+
+    <button class="tour-card text-left rounded-2xl overflow-hidden bg-white shadow-sm" data-cat="adventure" data-tour="patagonia">
+      <div class="h-60 overflow-hidden"><img src="https://images.unsplash.com/photo-1490682143684-14369e18dce8?w=600&q=80" class="tour-img w-full h-full object-cover" alt="Patagonia mountains"></div>
+      <div class="p-5">
+        <span class="text-xs font-semibold text-ember uppercase tracking-wide">Adventure</span>
+        <h3 class="font-display text-xl font-semibold mt-1">Patagonia Trail</h3>
+        <p class="text-ink/50 text-sm mt-1">10 days · from $1599</p>
+      </div>
+    </button>
+
+    <button class="tour-card text-left rounded-2xl overflow-hidden bg-white shadow-sm" data-cat="beach" data-tour="santorini">
+      <div class="h-60 overflow-hidden"><img src="https://images.unsplash.com/photo-1469796466635-455ede028aca?w=600&q=80" class="tour-img w-full h-full object-cover" alt="Santorini"></div>
+      <div class="p-5">
+        <span class="text-xs font-semibold text-ember uppercase tracking-wide">Beach</span>
+        <h3 class="font-display text-xl font-semibold mt-1">Santorini Sunsets</h3>
+        <p class="text-ink/50 text-sm mt-1">6 days · from $1099</p>
+      </div>
+    </button>
+
+    <button class="tour-card text-left rounded-2xl overflow-hidden bg-white shadow-sm" data-cat="culture" data-tour="kyoto">
+      <div class="h-60 overflow-hidden"><img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&q=80" class="tour-img w-full h-full object-cover" alt="Kyoto temple"></div>
+      <div class="p-5">
+        <span class="text-xs font-semibold text-ember uppercase tracking-wide">Culture</span>
+        <h3 class="font-display text-xl font-semibold mt-1">Kyoto Quiet Hours</h3>
+        <p class="text-ink/50 text-sm mt-1">6 days · from $1099</p>
+      </div>
+    </button>
+
+    <button class="tour-card text-left rounded-2xl overflow-hidden bg-white shadow-sm" data-cat="adventure" data-tour="iceland">
+      <div class="h-60 overflow-hidden"><img src="./ChatGPT Image 18 июн. 2026 г., 20_32_33.png" class="tour-img w-full h-full object-cover" alt="Iceland landscape"></div>
+      <div class="p-5">
+        <span class="text-xs font-semibold text-ember uppercase tracking-wide">Adventure</span>
+        <h3 class="font-display text-xl font-semibold mt-1">Iceland Ring Road</h3>
+        <p class="text-ink/50 text-sm mt-1">9 days · from $1399</p>
+      </div>
+    </button>
+
+    <button class="tour-card text-left rounded-2xl overflow-hidden bg-white shadow-sm" data-cat="beach" data-tour="maldives">
+      <div class="h-60 overflow-hidden"><img src="https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=600&q=80" class="tour-img w-full h-full object-cover" alt="Maldives overwater villa"></div>
+      <div class="p-5">
+        <span class="text-xs font-semibold text-ember uppercase tracking-wide">Beach</span>
+        <h3 class="font-display text-xl font-semibold mt-1">Maldives Reset</h3>
+        <p class="text-ink/50 text-sm mt-1">5 days · from $1899</p>
+      </div>
+    </button>
+
+  </div>
+  <p id="emptyState" class="hidden text-center text-ink/40 py-16 font-display text-xl">No tours in this category yet — check back soon.</p>
+</section>
+
+<!-- CTA -->
+<section class="max-w-7xl mx-auto px-6 lg:px-10 pb-24">
+  <div class="bg-pineDeep rounded-[2rem] px-8 sm:px-14 py-14 text-center reveal">
+    <h2 class="font-display text-3xl lg:text-4xl text-sand font-semibold">Don't see your trip?</h2>
+    <p class="text-sand/60 mt-3 max-w-md mx-auto">Most of our best itineraries are custom-built — tell us the mood and we'll draft one.</p>
+    <button class="btn-ember px-7 py-3 rounded-full font-semibold mt-7" data-modal-open="bookingModal">Request a custom tour</button>
+  </div>
+</section>
+
+<footer class="bg-ink text-sand pt-20 pb-10">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="grid md:grid-cols-4 gap-12">
+      <div class="md:col-span-2">
+        <a href="index.html" class="font-display italic text-2xl">Wayfare</a>
+        <p class="text-sand/50 mt-4 max-w-sm text-sm">Quiet, well-paced journeys to the world's most alive places. Planned by people who've actually been there.</p>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4 text-sm uppercase tracking-wide text-sand/60">Explore</h4>
+        <ul class="space-y-2.5 text-sand/70 text-sm">
+          <li><a href="tours.html" class="hover:text-ember transition-colors">Tours</a></li>
+          <li><a href="destinations.html" class="hover:text-ember transition-colors">Destinations</a></li>
+          <li><a href="about.html" class="hover:text-ember transition-colors">About us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4 text-sm uppercase tracking-wide text-sand/60">Contact</h4>
+        <p class="text-sand/70 text-sm">hello@wayfare.travel</p>
+      </div>
+    </div>
+    <div class="border-t border-sand/10 mt-14 pt-7 flex flex-wrap justify-between gap-4 text-xs text-sand/40">
+      <p>© 2026 Wayfare Travel. All rights reserved.</p>
+      <div class="flex gap-6"><a href="#" class="hover:text-sand transition-colors">Privacy</a><a href="#" class="hover:text-sand transition-colors">Terms</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div class="modal-backdrop" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+  <div class="min-h-full flex items-center justify-center p-4">
+    <div class="modal-panel bg-sand rounded-3xl w-full max-w-lg p-8 relative max-h-[90vh] overflow-y-auto">
+      <button class="absolute top-5 right-5 w-9 h-9 rounded-full flex items-center justify-center hover:bg-ink/5 transition-colors" data-modal-close>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <span class="text-ember font-semibold text-sm uppercase tracking-wide">Let's plan it</span>
+      <h3 id="bookingTitle" class="font-display text-3xl font-semibold mt-2">Start your booking</h3>
+      <p class="text-ink/60 text-sm mt-2">Tell us the basics — we'll follow up with a real itinerary, not a form letter.</p>
+      <form class="mt-7 space-y-4" id="bookingForm">
+        <div>
+          <label class="text-xs font-semibold uppercase tracking-wide text-ink/50">Full name</label>
+          <input type="text" required class="w-full mt-1.5 bg-white border border-ink/10 rounded-xl px-4 py-3 focus:outline-none focus:border-ember">
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-semibold uppercase tracking-wide text-ink/50">Destination</label>
+            <select class="w-full mt-1.5 bg-white border border-ink/10 rounded-xl px-4 py-3 focus:outline-none focus:border-ember">
+              <option>Bali, Indonesia</option><option>Paris, France</option><option>London, England</option><option>Tokyo, Japan</option><option>Surprise me</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold uppercase tracking-wide text-ink/50">Travel month</label>
+            <input type="month" class="w-full mt-1.5 bg-white border border-ink/10 rounded-xl px-4 py-3 focus:outline-none focus:border-ember">
+          </div>
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase tracking-wide text-ink/50">Email</label>
+          <input type="email" required class="w-full mt-1.5 bg-white border border-ink/10 rounded-xl px-4 py-3 focus:outline-none focus:border-ember">
+        </div>
+        <button type="submit" class="btn-ember w-full py-3.5 rounded-full font-semibold mt-2">Send request</button>
+      </form>
+      <p class="text-center text-xs text-ink/40 mt-4">No payment now — we'll confirm details first.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TOUR DETAIL MODAL -->
+<div class="modal-backdrop" id="tourModal" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+  <div class="min-h-full flex items-center justify-center p-4">
+    <div class="modal-panel bg-sand rounded-3xl w-full max-w-3xl overflow-hidden relative max-h-[90vh] overflow-y-auto">
+      <button class="absolute top-5 right-5 w-9 h-9 rounded-full bg-sand/90 flex items-center justify-center hover:bg-ink/10 transition-colors z-10" data-modal-close>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="h-64 sm:h-80 relative">
+        <img id="tourImg" src="" class="w-full h-full object-cover" alt="">
+        <div class="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent"></div>
+        <div class="absolute bottom-5 left-7">
+          <span id="tourCat" class="text-sand/80 text-sm font-medium"></span>
+          <h3 id="tourTitle" class="font-display text-3xl sm:text-4xl text-sand font-semibold"></h3>
+        </div>
+      </div>
+      <div class="p-7 sm:p-9">
+        <div class="flex flex-wrap gap-6 text-sm text-ink/60 mb-5">
+          <span id="tourDuration"></span>
+          <span id="tourPrice" class="font-semibold text-ember"></span>
+        </div>
+        <p id="tourDesc" class="text-ink/70 leading-relaxed"></p>
+        <button class="btn-ember px-7 py-3 rounded-full font-semibold mt-7" data-modal-open="bookingModal" data-modal-close>Book this tour</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.addEventListener('load', () => setTimeout(() => document.getElementById('loader').classList.add('done'), 400));
+
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const bar1 = document.getElementById('bar1'), bar2 = document.getElementById('bar2'), bar3 = document.getElementById('bar3');
+  let menuOpen = false;
+  menuToggle.addEventListener('click', () => {
+    menuOpen = !menuOpen;
+    menuToggle.setAttribute('aria-expanded', menuOpen);
+    if (menuOpen) {
+      mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px'; mobileMenu.style.opacity = '1';
+      bar1.style.transform = 'translateY(7px) rotate(45deg)'; bar2.style.transform = 'translateY(-7px) rotate(-45deg)'; bar3.style.opacity = '0';
+    } else {
+      mobileMenu.style.maxHeight = '0px'; mobileMenu.style.opacity = '0';
+      bar1.style.transform = ''; bar2.style.transform = ''; bar3.style.opacity = '1';
+    }
+  });
+
+  const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+  const io = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  function openModal(id) { const m = document.getElementById(id); if (!m) return; m.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeModal(m) { m.classList.remove('open'); document.body.style.overflow = ''; }
+  document.querySelectorAll('[data-modal-open]').forEach(btn => btn.addEventListener('click', () => openModal(btn.dataset.modalOpen)));
+  document.querySelectorAll('.modal-backdrop').forEach(modal => {
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(modal); });
+    modal.querySelectorAll('[data-modal-close]').forEach(btn => btn.addEventListener('click', () => closeModal(modal)));
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.modal-backdrop.open').forEach(closeModal); });
+
+  // Filtering
+  const filterBtns = document.querySelectorAll('.filter-pill');
+  const tourCards = document.querySelectorAll('#tourGrid [data-cat]');
+  const emptyState = document.getElementById('emptyState');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      let visible = 0;
+      tourCards.forEach(card => {
+        const show = f === 'all' || card.dataset.cat === f;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      emptyState.classList.toggle('hidden', visible !== 0);
+    });
+  });
+
+  // Tour detail data
+  const tours = {
+    bali: { name:'Bali Slow Escape', cat:'Beach', duration:'7 days', price:'from $799', img:'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1000&q=80', desc:'Rice terraces at sunrise, cliffside temples by afternoon, and slow dinners that run long. Centered on Ubud and the southern coast, with space to do nothing at all.' },
+    paris: { name:'Paris on Foot', cat:'City', duration:'5 days', price:'from $999', img:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1000&q=80', desc:'Museums before the crowds, long lunches in the Marais, and a city built for walking without a map.' },
+    london: { name:'London & Countryside', cat:'Culture', duration:'6 days', price:'from $899', img:'https://images.unsplash.com/photo-1486299267070-83823f5448dd?w=1000&q=80', desc:'Markets, museums, proper pub roasts, and a day trip to the countryside most visitors skip entirely.' },
+    tokyo: { name:'Tokyo After Dark', cat:'City', duration:'8 days', price:'from $1199', img:'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1000&q=80', desc:'Neon streets and centuries-old shrines two blocks apart — the famous crossings mixed with neighborhoods locals actually live in.' },
+    patagonia: { name:'Patagonia Trail', cat:'Adventure', duration:'10 days', price:'from $1599', img:'https://images.unsplash.com/photo-1490682143684-14369e18dce8?w=1000&q=80', desc:'Glacier hikes, wind-carved peaks, and nights under skies with no light pollution for hundreds of miles.' },
+    santorini: { name:'Santorini Sunsets', cat:'Beach', duration:'6 days', price:'from $1099', img:'https://images.unsplash.com/photo-1469796466635-455ede028aca?w=1000&q=80', desc:'Whitewashed cliffs, volcanic beaches, and a sunset in Oia that somehow lives up to the photos.' },
+    kyoto: { name:'Kyoto Quiet Hours', cat:'Culture', duration:'6 days', price:'from $1099', img:'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1000&q=80', desc:'Bamboo groves at dawn, tea ceremonies, and temples timed to avoid the tour groups entirely.' },
+    iceland: { name:'Iceland Ring Road', cat:'Adventure', duration:'9 days', price:'from $1399', img:'https://images.unsplash.com/photo-1504829857797-4790f4d533c8?w=1000&q=80', desc:'Waterfalls, black sand beaches, and a self-paced drive around an island that rewards getting lost.' },
+    maldives: { name:'Maldives Reset', cat:'Beach', duration:'5 days', price:'from $1899', img:'https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=1000&q=80', desc:'Overwater stillness, reef snorkeling at sunrise, and a schedule with exactly nothing on it.' },
+  };
+  document.querySelectorAll('[data-tour]').forEach(card => {
+    card.addEventListener('click', () => {
+      const t = tours[card.dataset.tour];
+      if (!t) return;
+      document.getElementById('tourImg').src = t.img;
+      document.getElementById('tourImg').alt = t.name;
+      document.getElementById('tourCat').textContent = t.cat;
+      document.getElementById('tourTitle').textContent = t.name;
+      document.getElementById('tourDuration').textContent = t.duration;
+      document.getElementById('tourPrice').textContent = t.price;
+      document.getElementById('tourDesc').textContent = t.desc;
+      openModal('tourModal');
+    });
+  });
+
+  const bookForm = document.getElementById('bookingForm');
+  if (bookForm) bookForm.addEventListener('submit', (e) => { e.preventDefault(); closeModal(document.getElementById('bookingModal')); bookForm.reset(); alert("Request sent — we'll follow up by email within a day."); });
+</script>
+</body>
+</html>
